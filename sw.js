@@ -16,10 +16,11 @@ self.addEventListener('fetch', (event) => {
     url.pathname.endsWith('.html');
 
   if (isDocument) {
-    // RÉSEAU D'ABORD : on récupère toujours la dernière page quand il y a du réseau,
-    // sinon on retombe sur la version en cache (hors-ligne).
+    // RÉSEAU D'ABORD + no-store : on contourne le cache HTTP pour toujours
+    // récupérer la toute dernière page (donc le dernier bundle). Hors-ligne,
+    // on retombe sur la version en cache.
     event.respondWith(
-      fetch(req)
+      fetch(req, { cache: 'no-store' })
         .then((res) => {
           const copy = res.clone();
           caches.open(CACHE).then((c) => c.put(req, copy));

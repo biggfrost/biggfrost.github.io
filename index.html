@@ -40,9 +40,26 @@
   <script src="/_expo/static/js/web/index-e60df87ba5ef553c1ccbe515906e236e.js" defer></script>
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('/sw.js');
+  // Recharge automatiquement quand un nouveau service worker prend la main
+  var swRefreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function () {
+    if (swRefreshing) return;
+    swRefreshing = true;
+    window.location.reload();
   });
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('/sw.js').then(function (reg) {
+      reg.update();
+      // Re-vérifie une mise à jour chaque fois que l'app revient au premier plan
+      document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') reg.update();
+      });
+    });
+  });
+}
+// Demande un stockage persistant pour éviter la perte des données
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist();
 }
 </script>
 </body>
