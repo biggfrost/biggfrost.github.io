@@ -32,6 +32,8 @@
 <style>
 html,body{background-color:#0C0B08;height:100%;}
 html,body,#root{min-height:100vh;}
+/* Verrouille la page : iOS ne peut plus la pousser vers le haut quand le clavier s'ouvre */
+body{position:fixed;top:0;left:0;right:0;bottom:0;overflow:hidden;}
 </style>
 </head>
 
